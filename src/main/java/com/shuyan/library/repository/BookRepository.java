@@ -53,10 +53,10 @@ public class BookRepository {
                 .findFirst();
     }
 
-    public List<Book> findByTitle(String title){
+    public Optional<Book> findByTitle(String title){
         return loadBooks().stream()
                 .filter(book -> book.getTitle().equalsIgnoreCase(title))
-                .collect(Collectors.toList());
+                .findFirst();
     }
 
     public List<Book> findAll() {

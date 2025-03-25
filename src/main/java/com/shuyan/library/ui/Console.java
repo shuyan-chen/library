@@ -25,10 +25,11 @@ public class Console {
             int choice = readIntInput("Please select one option: ");
             switch (choice) {
                 case 1 -> displayBooks();
-                case 2 -> addBook();
-                case 3 -> editBook();
-                case 4 -> deleteBook();
-                case 5 -> {
+                case 2 -> findBookByTitle();
+                case 3 -> addBook();
+                case 4 -> editBook();
+                case 5 -> deleteBook();
+                case 6 -> {
                     System.out.println("Goodbye!");
                     return;
                 }
@@ -38,12 +39,13 @@ public class Console {
 
     private void displayMenu() {
         System.out.println("\n=== Library Management System ===");
-        System.out.println("1. Display book list");
-        System.out.println("2. Add a book");
-        System.out.println("3. Edit a book");
-        System.out.println("4. Delete a book");
-        System.out.println("5. Exit");
-        System.out.println("============================");
+        System.out.println("1. List all books");
+        System.out.println("2. Find book by title");
+        System.out.println("3. Add new book");
+        System.out.println("4. Update book");
+        System.out.println("5. Delete book");
+        System.out.println("6. Exit");
+        System.out.print("\nChoose an option (1-6): ");
     }
 
     private int readIntInput(String s) {
@@ -71,6 +73,24 @@ public class Console {
                 String.format("ID: %d\nTitle: %s\nAuthor: %s\nDescription: %s\n",
                         book.getId(), book.getTitle(), book.getAuthor(), book.getDescription())
         ));
+    }
+
+    private void findBookByTitle() {
+            System.out.print("Enter book title to search: ");
+            String title = scanner.nextLine().trim();
+
+            Optional<Book> books = bookService.findByTitle(title);
+
+            if (books.isPresent()) {
+                Book book = books.get();
+                System.out.println("\nBook found:");
+                System.out.println("ID: " + book.getId());
+                System.out.println("Title: " + book.getTitle());
+                System.out.println("Author: " + book.getAuthor());
+                System.out.println("Description: " + book.getDescription());
+            } else {
+                System.out.println("No book found with title: " + title);
+            }
     }
 
     private void addBook(){

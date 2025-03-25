@@ -7,6 +7,7 @@ import com.shuyan.library.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -30,7 +31,7 @@ public class BookService {
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
-    public List<Book> findBookByTitle(String title) {
+    public Optional<Book> findByTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be empty");
         }

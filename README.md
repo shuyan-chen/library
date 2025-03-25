@@ -17,28 +17,22 @@ A simple command-line library management system built with Spring Framework that
 - Gradle
 - Jackson CSV
 
-## Project Structure
+## Get Started 
+### Prerequisites
+- Java Development Kit (JDK) 17 or later
+ - Gradle 8.4 or later
+## Installation
+1. Clone the repository
+2. Navigate to the project directory
+3. Build the project
+4. Run the application
 
-```plaintext
-src/
-├── main/
-│   ├── java/
-│   │   └── com/
-│   │       └── shuyan/
-│   │           └── library/
-│   │               ├── LibraryApplication.java
-│   │               ├── model/
-│   │               │   └── Book.java
-│   │               ├── repository/
-│   │               │   └── BookRepository.java
-│   │               ├── service/
-│   │               │   └── BookService.java
-│   │               ├── ui/
-│   │               │   └── Console.java
-│   │               └── exception/
-│   │                   ├── LibraryBaseException.java
-│   │                   ├── BookNotFoundException.java
-│   │                   ├── DuplicateBookException.java
-│   │                   └── InvalidBookDataException.java
-│   └── resources/
-│       └── books.csv
+## Usage
+The system provides a command-line interface with the following options:
+
+1. List all books
+2. Find book by title
+3. Add new book
+4. Update book
+5. Delete book
+6. Exit
