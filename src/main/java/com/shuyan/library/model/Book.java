@@ -28,7 +28,6 @@ public class Book {
         this.description = description;
     }
 
-
     public int getId() {
         return id;
     }
