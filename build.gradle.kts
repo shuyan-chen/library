@@ -16,6 +16,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.18.2")
     compileOnly("org.projectlombok:lombok:1.18.30")
+    implementation("org.aspectj:aspectjrt:1.9.22.1")
+    implementation("org.aspectj:aspectjweaver:1.9.22.1")
 }
 
 

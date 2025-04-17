@@ -2,25 +2,28 @@ package com.shuyan.library.ui;
 
 import com.shuyan.library.model.Book;
 import com.shuyan.library.service.BookService;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
+
 
 @Component
 public class Console {
     private final BookService bookService;
     private final Scanner scanner;
+    private final MessageSource messageSource;
+    private Locale locale;
 
-    public Console(BookService bookService) {
+    public Console(BookService bookService, MessageSource messageSource) {
         this.bookService = bookService;
         this.scanner = new Scanner(System.in);
+        this.messageSource = messageSource;
     }
 
     public void run() {
-        while (true) {
+        selectLanguage();
+        while (true){
             displayMenu();
             int choice = readIntInput("Please select one option: ");
             switch (choice) {
@@ -154,6 +157,27 @@ public class Console {
         } else {
             System.out.println("Book not found with ID: " + id);
         }
+    }
+
+    private void selectLanguage() {
+        System.out.println("=================================");
+        System.out.println("Select language: 1. English, 2. Polski");
+        String langChoice = scanner.nextLine();
+        if ("1".equals(langChoice)) {
+            locale = Locale.ENGLISH;
+        } else if ("2".equals(langChoice)) {
+            locale = new Locale("pl","PL");
+        } else {
+            System.out.println("Invalid selection, defaulting to English.");
+            locale = Locale.ENGLISH;
+        }
+        System.out.println("DEBUG: Selected locale is " + locale);
+        System.out.println("DEBUG: menu.header: " + getMessage("menu.header"));
+
+    }
+
+    private String getMessage(String key, Object... args) {
+        return messageSource.getMessage(key, args, locale);
     }
 
 

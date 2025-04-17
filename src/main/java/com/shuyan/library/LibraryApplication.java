@@ -3,9 +3,6 @@ package com.shuyan.library;
 import com.shuyan.library.config.AppConfig;
 import com.shuyan.library.ui.Console;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-
 
 public class LibraryApplication {
 
