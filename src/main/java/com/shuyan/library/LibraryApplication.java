@@ -6,14 +6,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class LibraryApplication {
 
-
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(AppConfig.class);
-
-        Console console = context.getBean(Console.class);
-        console.run();
-        context.close();
+        try (AnnotationConfigApplicationContext ctx =
+                     new AnnotationConfigApplicationContext(AppConfig.class)) {
+            ctx.getBean(Console.class).run();
+        }
     }
 
 }
