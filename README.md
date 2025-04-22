@@ -9,6 +9,8 @@ A simple command-line library management system built with Spring Framework that
 - View book details by ID
 - Update existing book information
 - Delete books from the library
+- Localization(ENG/PL)
+- 
 
 ## Technology Stack
 

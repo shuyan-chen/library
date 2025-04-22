@@ -22,8 +22,6 @@ public class Console {
     }
 
     public void run() {
-        selectLanguage();
-
         while (true) {
             System.out.println(messageSource.getMessage("menu.header", null, locale));
             System.out.println(messageSource.getMessage("menu.display", null, locale));
