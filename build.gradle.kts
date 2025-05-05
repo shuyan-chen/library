@@ -1,3 +1,9 @@
+val junitVersion: String by project
+val springContextVersion: String by project
+val jacksonVersion: String by project
+val lombokVersion: String by project
+val aspectjVersion: String by project
+
 plugins {
     id("java")
 }
@@ -10,14 +16,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("org.springframework:spring-context:6.2.3")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.18.2")
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    implementation("org.aspectj:aspectjrt:1.9.22.1")
-    implementation("org.aspectj:aspectjweaver:1.9.22.1")
+    implementation("org.springframework:spring-context:$springContextVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonVersion")
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    implementation("org.aspectj:aspectjrt:$aspectjVersion")
+    implementation("org.aspectj:aspectjweaver:$aspectjVersion")
 }
 
 

@@ -29,25 +29,30 @@ public class BookRepository {
         return loadBooks();
     }
 
-    public void save(Book book){
+    public void save(Book book) {
         if (book == null) {
             throw new IllegalArgumentException("Book cannot be null");
         }
+
         List<Book> books = loadBooks();
-        boolean exists = false;
-        for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getId() == book.getId()) {
-                books.set(i, book);
-                exists = true;
-                break;
+
+        Optional<Book> existingBook = findById(book.getId());
+
+        if (existingBook.isPresent()) {
+            for (int i = 0; i < books.size(); i++) {
+                if (books.get(i).getId() == book.getId()) {
+                    books.set(i, book);
+                    break;
+                }
             }
-        }
-        if (!exists) {
+        } else {
             book.setId(generateNextId(books));
             books.add(book);
         }
+
         writeBooksToCsv(books);
     }
+
 
     public void deleteById(int id){
         List<Book> books = findAll();
