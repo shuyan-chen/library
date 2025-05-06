@@ -3,6 +3,8 @@ val springContextVersion: String by project
 val jacksonVersion: String by project
 val lombokVersion: String by project
 val aspectjVersion: String by project
+val springjdbcVersion: String by project
+val postgresqlVersion: String by project
 
 plugins {
     id("java")
@@ -24,6 +26,8 @@ dependencies {
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     implementation("org.aspectj:aspectjrt:$aspectjVersion")
     implementation("org.aspectj:aspectjweaver:$aspectjVersion")
+    implementation("org.springframework:spring-jdbc:$springjdbcVersion")
+    runtimeOnly("org.postgresql:postgresql:$postgresqlVersion")
 }
 
 

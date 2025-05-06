@@ -1,32 +1,41 @@
 package com.shuyan.library.repository;
 
 import com.shuyan.library.model.Book;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
-
-import static com.shuyan.library.util.CsvUtil.loadBooks;
-import static com.shuyan.library.util.CsvUtil.writeBooksToCsv;
-import static com.shuyan.library.util.IdGenerator.generateNextId;
-
 
 @Repository
 public class BookRepository {
 
-    public Optional<Book> findById(int id){
-        return loadBooks().stream()
-                .filter(book -> book.getId() == id)
-                .findFirst();
+    private final JdbcTemplate jdbc;
+    private final RowMapper<Book> mapper = (rs, n) -> new Book(
+            rs.getInt("id"),
+            rs.getString("title"),
+            rs.getString("author"),
+            rs.getString("description")
+    );
+
+    public BookRepository(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
-    public Optional<Book> findByTitle(String title){
-        return loadBooks().stream()
-                .filter(book -> book.getTitle().equalsIgnoreCase(title))
-                .findFirst();
+    public Optional<Book> findById(int id) {
+        return jdbc.query("SELECT * FROM books WHERE id = ?", mapper, id)
+                .stream().findFirst();
+    }
+
+    public Optional<Book> findByTitle(String title) {
+        return jdbc.query("SELECT * FROM books WHERE LOWER(title) = LOWER(?)",
+                        mapper, title)
+                .stream().findFirst();
     }
 
     public List<Book> findAll() {
-        return loadBooks();
+        return jdbc.query("SELECT * FROM books ORDER BY id", mapper);
     }
 
     public void save(Book book) {
@@ -34,32 +43,23 @@ public class BookRepository {
             throw new IllegalArgumentException("Book cannot be null");
         }
 
-        List<Book> books = loadBooks();
-
-        Optional<Book> existingBook = findById(book.getId());
-
-        if (existingBook.isPresent()) {
-            for (int i = 0; i < books.size(); i++) {
-                if (books.get(i).getId() == book.getId()) {
-                    books.set(i, book);
-                    break;
-                }
-            }
+        if (book.getId() == 0) {
+            Integer id = jdbc.queryForObject(
+                    "INSERT INTO books(title, author, description) " +
+                            "VALUES (?,?,?) RETURNING id",
+                    Integer.class,
+                    book.getTitle(), book.getAuthor(), book.getDescription());
+            book.setId(id);
         } else {
-            book.setId(generateNextId(books));
-            books.add(book);
+            jdbc.update(
+                    "UPDATE books SET title=?, author=?, description=? WHERE id=?",
+                    book.getTitle(), book.getAuthor(),
+                    book.getDescription(), book.getId());
         }
-
-        writeBooksToCsv(books);
     }
 
-
-    public void deleteById(int id){
-        List<Book> books = findAll();
-        books.removeIf(book -> book.getId() == id);
-        writeBooksToCsv(books);
+    public void deleteById(int id) {
+        jdbc.update("DELETE FROM books WHERE id = ?", id);
     }
-
-
-
 }
+

@@ -11,7 +11,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @ComponentScan(basePackages = "com.shuyan.library")
 @EnableAspectJAutoProxy
 public class AppConfig {
-
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
