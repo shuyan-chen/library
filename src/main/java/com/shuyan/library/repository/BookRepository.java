@@ -1,65 +1,69 @@
 package com.shuyan.library.repository;
 
 import com.shuyan.library.model.Book;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.criteria.JpaCriteriaQuery;
+import org.hibernate.query.criteria.JpaRoot;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional(readOnly = true)
 public class BookRepository {
 
-    private final JdbcTemplate jdbc;
-    private final RowMapper<Book> mapper = (rs, n) -> new Book(
-            rs.getInt("id"),
-            rs.getString("title"),
-            rs.getString("author"),
-            rs.getString("description")
-    );
+    private final SessionFactory sessionFactory;
 
-    public BookRepository(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    private Session session() {
+        return sessionFactory.getCurrentSession();
+    }
+
+    public BookRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     public Optional<Book> findById(int id) {
-        return jdbc.query("SELECT * FROM books WHERE id = ?", mapper, id)
-                .stream().findFirst();
+        return Optional.ofNullable(session().get(Book.class, id));
     }
 
     public Optional<Book> findByTitle(String title) {
-        return jdbc.query("SELECT * FROM books WHERE LOWER(title) = LOWER(?)",
-                        mapper, title)
-                .stream().findFirst();
+        HibernateCriteriaBuilder criteriaBuilder = session().getCriteriaBuilder();
+        JpaCriteriaQuery<Book> query = criteriaBuilder.createQuery(Book.class);
+        JpaRoot<Book> root = query.from(Book.class);
+        query.select(root).where(criteriaBuilder.equal(root.get("title"), title));
+
+        return session().createQuery(query)
+                .setCacheable(true)
+                .uniqueResultOptional();
     }
 
     public List<Book> findAll() {
-        return jdbc.query("SELECT * FROM books ORDER BY id", mapper);
+         String hql = "from Book";
+         return   session()
+                 .createQuery(hql, Book.class)
+                 .setCacheable(true)
+                 .list();
     }
 
-    public void save(Book book) {
-        if (book == null) {
-            throw new IllegalArgumentException("Book cannot be null");
-        }
-
-        if (book.getId() == 0) {
-            Integer id = jdbc.queryForObject(
-                    "INSERT INTO books(title, author, description) " +
-                            "VALUES (?,?,?) RETURNING id",
-                    Integer.class,
-                    book.getTitle(), book.getAuthor(), book.getDescription());
-            book.setId(id);
-        } else {
-            jdbc.update(
-                    "UPDATE books SET title=?, author=?, description=? WHERE id=?",
-                    book.getTitle(), book.getAuthor(),
-                    book.getDescription(), book.getId());
-        }
+    @Transactional
+    public Book save(Book book) {
+        return (Book) session().merge(book);
     }
 
-    public void deleteById(int id) {
-        jdbc.update("DELETE FROM books WHERE id = ?", id);
+    @Transactional
+    public boolean deleteById(int id) {
+        Book b = session().get(Book.class, id);
+        if(b == null) return false;
+        session().remove(b);
+        return true;
     }
+
+
 }
 

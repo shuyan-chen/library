@@ -1,9 +1,18 @@
 package com.shuyan.library.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Book {
 
+    @Id
     @JsonProperty
     private Integer id;
     @JsonProperty
@@ -11,6 +20,7 @@ public class Book {
     @JsonProperty
     private String author;
     @JsonProperty
+    @Column(length = 2000)
     private String description;
 
     public Book(){};

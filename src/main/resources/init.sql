@@ -29,14 +29,14 @@ CREATE TABLE book_genres (
                              PRIMARY KEY (book_id, genre_id)
 );
 
-INSERT INTO authors(name, birth_year) VALUES ('J. K. Rowling', 1965);
+INSERT INTO authors(name, birth_year) VALUES ('J.K.Rowling', 1965);
 INSERT INTO genres(name) VALUES ('Fantasy'), ('Mystery');
 INSERT INTO books(title, isbn, published_year)
-VALUES ('Harry Potter and the Philosopher''s Stone','9780747532699',1997);
+VALUES ('HarryPotterandthePhilosopher''Stone','9780747532699',1997);
 
 INSERT INTO book_authors
 SELECT b.id, a.id FROM books b, authors a
-WHERE b.title LIKE 'Harry%' AND a.name='J. K. Rowling';
+WHERE b.title LIKE 'Harry%' AND a.name='J.K.Rowling';
 
 INSERT INTO book_genres
 SELECT b.id, g.id FROM books b, genres g
